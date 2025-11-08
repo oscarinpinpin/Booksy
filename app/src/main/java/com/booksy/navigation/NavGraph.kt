@@ -7,6 +7,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.booksy.data.local.AppDatabase
 import com.booksy.ui.screens.LoginScreen
+import com.booksy.ui.screens.RegisterScreen
 import com.booksy.ui.screens.HomeScreen
 import kotlinx.coroutines.launch
 
@@ -27,7 +28,20 @@ fun NavGraph(
                     }
                 },
                 onNavigateToRegister = {
-                    // por ahora no hace nada
+                    navController.navigate(Screen.Register.route)
+                }
+            )
+        }
+
+        composable(Screen.Register.route) {
+            RegisterScreen(
+                onRegisterSuccess = {
+                    navController.navigate(Screen.Home.route) {
+                        popUpTo(Screen.Login.route) { inclusive = true }
+                    }
+                },
+                onNavigateToLogin = {
+                    navController.popBackStack()
                 }
             )
         }
