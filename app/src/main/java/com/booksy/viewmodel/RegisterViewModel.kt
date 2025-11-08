@@ -90,7 +90,7 @@ class RegisterViewModel(
     private fun validatePassword(password: String) {
         _passwordError.value = when {
             password.isBlank() -> "La contraseña es requerida"
-            password.length < 6 -> "Minimo 6 caracteres"
+            password.length < 8 -> "Minimo 8 caracteres"
             else -> null
         }
     }
