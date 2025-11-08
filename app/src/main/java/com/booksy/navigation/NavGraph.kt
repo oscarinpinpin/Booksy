@@ -6,9 +6,11 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.booksy.data.local.AppDatabase
+import com.booksy.data.local.UserEntity
 import com.booksy.ui.screens.LoginScreen
 import com.booksy.ui.screens.RegisterScreen
 import com.booksy.ui.screens.HomeScreen
+import com.booksy.ui.screens.ProfileScreen
 import kotlinx.coroutines.launch
 
 @Composable
@@ -49,7 +51,20 @@ fun NavGraph(
         composable(Screen.Home.route) {
             HomeScreen(
                 onNavigateToProfile = {
-                    // por ahora no hace nada
+                    navController.navigate(Screen.Profile.route)
+                }
+            )
+        }
+
+        composable(Screen.Profile.route) {
+            ProfileScreen(
+                onLogout = {
+                    navController.navigate(Screen.Login.route) {
+                        popUpTo(0) { inclusive = true }
+                    }
+                },
+                onNavigateBack = {
+                    navController.popBackStack()
                 }
             )
         }
@@ -64,11 +79,21 @@ fun BooksyApp(appDatabase: AppDatabase) {
     LaunchedEffect(Unit) {
         scope.launch {
             val user = appDatabase.userDao().getUserOnce()
-            startDestination = if (user != null) {
-                Screen.Home.route
-            } else {
-                Screen.Login.route
+
+            // TEMPORAL: Si no hay usuario, crear uno fake
+            if (user == null) {
+                appDatabase.userDao().insertUser(
+                    UserEntity(
+                        id = 1,
+                        email = "vichin@gmail.com",
+                        name = "Vichin",
+                        token = "fake-token-vichin-123",
+                        profileImagePath = null
+                    )
+                )
             }
+
+            startDestination = Screen.Home.route  // Ir directo a Home
         }
     }
 
