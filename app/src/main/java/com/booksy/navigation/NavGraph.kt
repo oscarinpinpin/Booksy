@@ -79,21 +79,11 @@ fun BooksyApp(appDatabase: AppDatabase) {
     LaunchedEffect(Unit) {
         scope.launch {
             val user = appDatabase.userDao().getUserOnce()
-
-            // TEMPORAL: Si no hay usuario, crear uno fake
-            if (user == null) {
-                appDatabase.userDao().insertUser(
-                    UserEntity(
-                        id = 1,
-                        email = "vichin@gmail.com",
-                        name = "Vichin",
-                        token = "fake-token-vichin-123",
-                        profileImagePath = null
-                    )
-                )
+            startDestination = if (user != null) {
+                Screen.Home.route
+            } else {
+                Screen.Login.route
             }
-
-            startDestination = Screen.Home.route  // Ir directo a Home
         }
     }
 

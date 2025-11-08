@@ -133,9 +133,9 @@ class RegisterViewModel(
 
                     database?.userDao()?.insertUser(
                         UserEntity(
-                            id = authResponse.user.id,
-                            email = authResponse.user.email,
-                            name = authResponse.user.name ?: "",
+                            id = authResponse.userId,
+                            email = _email.value,
+                            name = _name.value,
                             token = authResponse.authToken,
                             profileImagePath = null
                         )

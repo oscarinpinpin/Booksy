@@ -19,16 +19,6 @@ android {
         buildConfigField("String", "API_BASE_URL", "\"https://x8ki-letl-twmt.n7.xano.io/api:Rfm_61dW/\"")
     }
 
-    buildTypes {
-        release {
-            isMinifyEnabled = false
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
-        }
-    }
-
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
