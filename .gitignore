@@ -52,3 +52,8 @@ Thumbs.db
 
 Desktop.ini
 
+
+# keystore files
+*.jks
+*.keystore
+keystore.properties
