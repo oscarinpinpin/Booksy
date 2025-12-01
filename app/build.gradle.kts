@@ -16,7 +16,7 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
-        buildConfigField("String", "API_BASE_URL", "\"https://x8ki-letl-twmt.n7.xano.io/api:Rfm_61dW/\"")
+        buildConfigField("String", "API_BASE_URL", "\"http://10.0.2.2:8080/api/\"")
     }
 
     compileOptions {
@@ -70,8 +70,26 @@ dependencies {
 
     implementation("io.coil-kt:coil-compose:2.4.0")
     implementation("com.google.accompanist:accompanist-permissions:0.32.0")
+    implementation("com.google.android.material:material:1.9.0")
 
+
+    // Testing - JUnit
     testImplementation("junit:junit:4.13.2")
+
+    // Testing - Coroutines
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
+
+    // Testing - MockK (mocking framework)
+    testImplementation("io.mockk:mockk:1.13.8")
+    testImplementation("io.mockk:mockk-android:1.13.8")
+
+    // Testing - Turbine (para testar StateFlow/Flow)
+    testImplementation("app.cash.turbine:turbine:1.0.0")
+
+    // Testing - Core Testing (para InstantTaskExecutorRule)
+    testImplementation("androidx.arch.core:core-testing:2.2.0")
+
+    // Android Testing
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
 }

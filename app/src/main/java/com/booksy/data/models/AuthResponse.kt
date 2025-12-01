@@ -6,6 +6,6 @@ data class AuthResponse(
     @SerializedName("authToken")
     val authToken: String,
 
-    @SerializedName("user_id")
-    val userId: Int
+    @SerializedName("userId")
+    val userId: Long
 )

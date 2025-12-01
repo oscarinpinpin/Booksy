@@ -16,7 +16,7 @@ interface UserDao {
     suspend fun getUserOnce(): UserEntity?
 
     @Query("UPDATE user SET profileImagePath = :imagePath WHERE id = :userId")
-    suspend fun updateProfileImage(userId: Int, imagePath: String)
+    suspend fun updateProfileImage(userId: Long, imagePath: String)
 
     @Query("DELETE FROM user")
     suspend fun deleteUser()

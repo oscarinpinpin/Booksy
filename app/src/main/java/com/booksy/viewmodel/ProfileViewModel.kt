@@ -43,8 +43,8 @@ class ProfileViewModel(
     private fun loadUserFromApi() {
         viewModelScope.launch {
             try {
-                val token = _currentUser.value?.token ?: return@launch
-                val response = RetrofitClient.api.getCurrentUser("Bearer $token")
+                val userId = _currentUser.value?.id ?: return@launch
+                val response = RetrofitClient.api.getCurrentUser(userId)
 
                 if (response.isSuccessful && response.body() != null) {
                     val user = response.body()!!
