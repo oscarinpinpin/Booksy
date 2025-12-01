@@ -6,6 +6,7 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -23,6 +24,7 @@ import com.booksy.viewmodel.GoogleBooksUiState
 @Composable
 fun HomeScreen(
     onNavigateToProfile: () -> Unit,
+    onNavigateToCart: () -> Unit = {},
     viewModel: BooksViewModel = viewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -39,6 +41,9 @@ fun HomeScreen(
             TopAppBar(
                 title = { Text("Catalogo") },
                 actions = {
+                    IconButton(onClick = onNavigateToCart) {
+                        Icon(Icons.Default.ShoppingCart, contentDescription = "Carrito")
+                    }
                     IconButton(onClick = onNavigateToProfile) {
                         Icon(Icons.Default.Person, contentDescription = "Perfil")
                     }

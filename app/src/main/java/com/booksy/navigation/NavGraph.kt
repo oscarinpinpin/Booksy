@@ -7,6 +7,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.booksy.data.local.AppDatabase
 import com.booksy.data.local.UserEntity
+import com.booksy.ui.screens.CartScreen
 import com.booksy.ui.screens.LoginScreen
 import com.booksy.ui.screens.RegisterScreen
 import com.booksy.ui.screens.HomeScreen
@@ -52,6 +53,17 @@ fun NavGraph(
             HomeScreen(
                 onNavigateToProfile = {
                     navController.navigate(Screen.Profile.route)
+                },
+                onNavigateToCart = {
+                    navController.navigate(Screen.Cart.route)
+                }
+            )
+        }
+
+        composable(Screen.Cart.route) {
+            CartScreen(
+                onNavigateBack = {
+                    navController.popBackStack()
                 }
             )
         }
