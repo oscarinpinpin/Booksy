@@ -19,11 +19,11 @@ import com.booksy.data.models.Book
 fun HomeScreen(onNavigateToProfile: () -> Unit) {
     val bookList = remember {
         listOf(
-            Book(1, "Cien Años de Soledad", "Gabriel García Márquez", 12990.0, "Ficcion", null),
-            Book(2, "El Principito", "Antoine de Saint-Exupéry", 8990.0, "Infantil", null),
-            Book(3, "Veinte Poemas de Amor", "Pablo Neruda", 7990.0, "Poesia", null),
-            Book(4, "Rayuela", "Julio Cortázar", 14990.0, "Ficcion", null),
-            Book(5, "La Casa de los Espíritus", "Isabel Allende", 13990.0, "Ficcion", null)
+            Book(1, "Cien Años de Soledad", "Gabriel García Márquez", 12990.0, "Ficcion", ""),
+            Book(2, "El Principito", "Antoine de Saint-Exupéry", 8990.0, "Infantil", ""),
+            Book(3, "Veinte Poemas de Amor", "Pablo Neruda", 7990.0, "Poesia", ""),
+            Book(4, "Rayuela", "Julio Cortázar", 14990.0, "Ficcion", ""),
+            Book(5, "La Casa de los Espíritus", "Isabel Allende", 13990.0, "Ficcion", "")
         )
     }
 
