@@ -2,6 +2,7 @@ package com.booksy.ui.screens
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Person
@@ -12,25 +13,27 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.booksy.data.models.Book
+import com.booksy.viewmodel.BooksUiState
+import com.booksy.viewmodel.BooksViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen(onNavigateToProfile: () -> Unit) {
-    val bookList = remember {
-        listOf(
-            Book(1, "Cien Años de Soledad", "Gabriel García Márquez", 12990.0, "Ficcion", ""),
-            Book(2, "El Principito", "Antoine de Saint-Exupéry", 8990.0, "Infantil", ""),
-            Book(3, "Veinte Poemas de Amor", "Pablo Neruda", 7990.0, "Poesia", ""),
-            Book(4, "Rayuela", "Julio Cortázar", 14990.0, "Ficcion", ""),
-            Book(5, "La Casa de los Espíritus", "Isabel Allende", 13990.0, "Ficcion", "")
-        )
-    }
+fun HomeScreen(
+    onNavigateToProfile: () -> Unit,
+    viewModel: BooksViewModel = viewModel()
+) {
+    val uiState by viewModel.uiState.collectAsState()
+    val searchQuery by viewModel.searchQuery.collectAsState()
+    val selectedCategory by viewModel.selectedCategory.collectAsState()
+
+    val categories = listOf("todas", "ficcion", "infantil", "poesia")
 
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Catálogo") },
+                title = { Text("Catalogo") },
                 actions = {
                     IconButton(onClick = onNavigateToProfile) {
                         Icon(Icons.Default.Person, contentDescription = "Perfil")
@@ -44,13 +47,69 @@ fun HomeScreen(onNavigateToProfile: () -> Unit) {
             )
         }
     ) { padding ->
-        LazyColumn(
-            modifier = Modifier.padding(padding),
-            contentPadding = PaddingValues(16.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp)
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(padding)
         ) {
-            items(bookList) { book ->
-                BookItem(book = book)
+            // buscador
+            OutlinedTextField(
+                value = searchQuery,
+                onValueChange = { viewModel.onSearchQueryChange(it) },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                placeholder = { Text("buscar por titulo o autor") },
+                singleLine = true
+            )
+
+            // filtro categorias
+            LazyRow(
+                contentPadding = PaddingValues(horizontal = 16.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                items(categories) { category ->
+                    FilterChip(
+                        selected = selectedCategory == category,
+                        onClick = { viewModel.onCategoryChange(category) },
+                        label = { Text(category.replaceFirstChar { it.uppercase() }) }
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            // lista de libros
+            when (val state = uiState) {
+                is BooksUiState.Loading -> {
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        CircularProgressIndicator()
+                    }
+                }
+                is BooksUiState.Success -> {
+                    LazyColumn(
+                        contentPadding = PaddingValues(16.dp),
+                        verticalArrangement = Arrangement.spacedBy(12.dp)
+                    ) {
+                        items(state.books) { book ->
+                            BookItem(book = book)
+                        }
+                    }
+                }
+                is BooksUiState.Error -> {
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = state.message,
+                            color = Color.Red
+                        )
+                    }
+                }
             }
         }
     }
