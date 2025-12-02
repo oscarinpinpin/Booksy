@@ -1,0 +1,6 @@
+# Ensure the Maven wrapper script uses LF endings on checkout
+# This helps Linux build systems (like Render) run the shell wrapper
+booksy-api/mvnw text eol=lf
+
+# Optional: ensure other scripts keep LF
+*.sh text eol=lf
