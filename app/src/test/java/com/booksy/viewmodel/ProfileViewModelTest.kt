@@ -1,8 +1,6 @@
 package com.booksy.viewmodel
 
-import android.content.Context
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import app.cash.turbine.test
 import com.booksy.data.local.AppDatabase
 import com.booksy.data.local.UserDao
 import com.booksy.data.local.UserEntity
@@ -15,8 +13,8 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertTrue
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotNull
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class ProfileViewModelTest {
@@ -26,7 +24,6 @@ class ProfileViewModelTest {
 
     private val testDispatcher = StandardTestDispatcher()
 
-    private lateinit var mockContext: Context
     private lateinit var mockDatabase: AppDatabase
     private lateinit var mockUserDao: UserDao
     private lateinit var viewModel: ProfileViewModel
@@ -35,12 +32,9 @@ class ProfileViewModelTest {
     fun setup() {
         Dispatchers.setMain(testDispatcher)
 
-        mockContext = mockk(relaxed = true)
         mockDatabase = mockk(relaxed = true)
         mockUserDao = mockk(relaxed = true)
 
-        every { mockContext.applicationContext } returns mockContext
-        every { AppDatabase.getDatabase(any()) } returns mockDatabase
         every { mockDatabase.userDao() } returns mockUserDao
     }
 
@@ -57,21 +51,19 @@ class ProfileViewModelTest {
             id = 1L,
             name = "Test User",
             email = "test@test.com",
-            password = "password123"
+            token = "test-token",
+            profileImagePath = null
         )
 
         every { mockUserDao.getUser() } returns flowOf(user)
 
-        viewModel = ProfileViewModel(mockContext)
+        viewModel = ProfileViewModel(mockDatabase)
         advanceUntilIdle()
 
-        viewModel.name.test {
-            assertEquals("Test User", awaitItem())
-        }
-
-        viewModel.email.test {
-            assertEquals("test@test.com", awaitItem())
-        }
+        val currentUser = viewModel.currentUser.value
+        assertNotNull(currentUser)
+        assertEquals("Test User", currentUser?.name)
+        assertEquals("test@test.com", currentUser?.email)
     }
 
     @Test
@@ -80,16 +72,18 @@ class ProfileViewModelTest {
             id = 1L,
             name = "Test User",
             email = "test@test.com",
-            password = "password123"
+            token = "test-token",
+            profileImagePath = null
         )
 
         every { mockUserDao.getUser() } returns flowOf(user)
         coEvery { mockUserDao.deleteUser() } just Runs
 
-        viewModel = ProfileViewModel(mockContext)
+        viewModel = ProfileViewModel(mockDatabase)
         advanceUntilIdle()
 
         viewModel.logout()
+        advanceUntilIdle()
 
         coVerify { mockUserDao.deleteUser() }
     }

@@ -24,7 +24,7 @@ public class CartController {
 
     // obtener items del carrito de un usuario
     @GetMapping("/user/{userId}")
-    public ResponseEntity<List<CartItem>> getCartItems(@PathVariable Long userId) {
+    public ResponseEntity<List<CartItem>> getCartItems(@PathVariable String userId) {
         List<CartItem> items = cartItemRepository.findByUserId(userId);
         return ResponseEntity.ok(items);
     }
@@ -38,7 +38,7 @@ public class CartController {
 
     // actualizar cantidad de un item
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateCartItem(@PathVariable Long id, @RequestBody Map<String, Integer> request) {
+    public ResponseEntity<?> updateCartItem(@PathVariable String id, @RequestBody Map<String, Integer> request) {
         var itemOpt = cartItemRepository.findById(id);
 
         if (itemOpt.isEmpty()) {
@@ -54,7 +54,7 @@ public class CartController {
 
     // eliminar item del carrito
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteCartItem(@PathVariable Long id) {
+    public ResponseEntity<?> deleteCartItem(@PathVariable String id) {
         if (!cartItemRepository.existsById(id)) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("item no encontrado");
         }
@@ -65,7 +65,7 @@ public class CartController {
 
     // calcular total del carrito con comision
     @GetMapping("/total/{userId}")
-    public ResponseEntity<Map<String, Double>> getCartTotal(@PathVariable Long userId) {
+    public ResponseEntity<Map<String, Double>> getCartTotal(@PathVariable String userId) {
         List<CartItem> items = cartItemRepository.findByUserId(userId);
 
         // calcular subtotal
@@ -89,7 +89,7 @@ public class CartController {
 
     // limpiar carrito
     @DeleteMapping("/clear/{userId}")
-    public ResponseEntity<?> clearCart(@PathVariable Long userId) {
+    public ResponseEntity<?> clearCart(@PathVariable String userId) {
         cartItemRepository.deleteByUserId(userId);
         return ResponseEntity.ok("carrito limpiado");
     }

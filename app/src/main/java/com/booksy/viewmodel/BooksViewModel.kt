@@ -3,8 +3,6 @@ package com.booksy.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.booksy.data.models.Book
-import com.booksy.data.models.GoogleBookItem
-import com.booksy.data.remote.GoogleBooksClient
 import com.booksy.data.remote.RetrofitClient
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -16,13 +14,6 @@ sealed class BooksUiState {
     data class Error(val message: String) : BooksUiState()
 }
 
-sealed class GoogleBooksUiState {
-    object Idle : GoogleBooksUiState()
-    object Loading : GoogleBooksUiState()
-    data class Success(val books: List<GoogleBookItem>) : GoogleBooksUiState()
-    data class Error(val message: String) : GoogleBooksUiState()
-}
-
 class BooksViewModel : ViewModel() {
     private val _uiState = MutableStateFlow<BooksUiState>(BooksUiState.Loading)
     val uiState = _uiState.asStateFlow()
@@ -32,13 +23,6 @@ class BooksViewModel : ViewModel() {
 
     private val _selectedCategory = MutableStateFlow("todas")
     val selectedCategory = _selectedCategory.asStateFlow()
-
-    // estado para google books api externa
-    private val _googleBooksState = MutableStateFlow<GoogleBooksUiState>(GoogleBooksUiState.Idle)
-    val googleBooksState = _googleBooksState.asStateFlow()
-
-    private val _googleQuery = MutableStateFlow("")
-    val googleQuery = _googleQuery.asStateFlow()
 
     private var allBooks = listOf<Book>()
 
@@ -93,29 +77,5 @@ class BooksViewModel : ViewModel() {
         }
 
         _uiState.value = BooksUiState.Success(filteredBooks)
-    }
-
-    // buscar libros en google books api externa
-    fun searchGoogleBooks(query: String) {
-        if (query.isBlank()) {
-            _googleBooksState.value = GoogleBooksUiState.Idle
-            return
-        }
-
-        _googleQuery.value = query
-        viewModelScope.launch {
-            _googleBooksState.value = GoogleBooksUiState.Loading
-            try {
-                val response = GoogleBooksClient.api.searchBooks(query)
-                if (response.isSuccessful && response.body() != null) {
-                    val books = response.body()!!.items ?: emptyList()
-                    _googleBooksState.value = GoogleBooksUiState.Success(books)
-                } else {
-                    _googleBooksState.value = GoogleBooksUiState.Error("error al buscar")
-                }
-            } catch (e: Exception) {
-                _googleBooksState.value = GoogleBooksUiState.Error("error de conexion")
-            }
-        }
     }
 }

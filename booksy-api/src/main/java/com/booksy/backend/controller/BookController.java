@@ -27,7 +27,7 @@ public class BookController {
 
     // obtener libro por id
     @GetMapping("/{id}")
-    public ResponseEntity<?> getBookById(@PathVariable Long id) {
+    public ResponseEntity<?> getBookById(@PathVariable String id) {
         Optional<Book> book = bookRepository.findById(id);
 
         if (book.isEmpty()) {
@@ -53,7 +53,7 @@ public class BookController {
 
     // actualizar libro
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateBook(@PathVariable Long id, @RequestBody Book bookDetails) {
+    public ResponseEntity<?> updateBook(@PathVariable String id, @RequestBody Book bookDetails) {
         Optional<Book> bookOpt = bookRepository.findById(id);
 
         if (bookOpt.isEmpty()) {
@@ -73,7 +73,7 @@ public class BookController {
 
     // eliminar libro
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteBook(@PathVariable Long id) {
+    public ResponseEntity<?> deleteBook(@PathVariable String id) {
         if (!bookRepository.existsById(id)) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("libro no encontrado");
         }

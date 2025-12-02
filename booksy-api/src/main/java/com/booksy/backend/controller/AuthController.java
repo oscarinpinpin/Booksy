@@ -68,7 +68,7 @@ public class AuthController {
 
     // obtener usuario
     @GetMapping("/me/{userId}")
-    public ResponseEntity<?> getUser(@PathVariable Long userId) {
+    public ResponseEntity<?> getUser(@PathVariable String userId) {
         Optional<User> userOpt = userRepository.findById(userId);
 
         if (userOpt.isEmpty()) {

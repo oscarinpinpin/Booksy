@@ -1,7 +1,6 @@
 package com.booksy.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import app.cash.turbine.test
 import com.booksy.data.models.Book
 import com.booksy.data.remote.RetrofitClient
 import io.mockk.*
@@ -12,9 +11,9 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import retrofit2.Response
-import kotlin.test.assertEquals
-import kotlin.test.assertTrue
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class BooksViewModelTest {
@@ -54,12 +53,10 @@ class BooksViewModelTest {
         viewModel.onSearchQueryChange("cien")
         advanceUntilIdle()
 
-        viewModel.uiState.test {
-            val state = awaitItem()
-            assertTrue(state is BooksUiState.Success)
-            assertEquals(1, (state as BooksUiState.Success).books.size)
-            assertEquals("Cien Años de Soledad", state.books[0].title)
-        }
+        val state = viewModel.uiState.value
+        assertTrue(state is BooksUiState.Success)
+        assertEquals(1, (state as BooksUiState.Success).books.size)
+        assertEquals("Cien Años de Soledad", state.books[0].title)
     }
 
     @Test
@@ -77,12 +74,10 @@ class BooksViewModelTest {
         viewModel.onCategoryChange("ficcion")
         advanceUntilIdle()
 
-        viewModel.uiState.test {
-            val state = awaitItem()
-            assertTrue(state is BooksUiState.Success)
-            assertEquals(1, (state as BooksUiState.Success).books.size)
-            assertEquals("ficcion", state.books[0].category)
-        }
+        val state = viewModel.uiState.value
+        assertTrue(state is BooksUiState.Success)
+        assertEquals(1, (state as BooksUiState.Success).books.size)
+        assertEquals("ficcion", state.books[0].category)
     }
 
     @Test
@@ -92,10 +87,8 @@ class BooksViewModelTest {
         viewModel = BooksViewModel()
         advanceUntilIdle()
 
-        viewModel.uiState.test {
-            val state = awaitItem()
-            assertTrue(state is BooksUiState.Error)
-            assertEquals("error de conexion", (state as BooksUiState.Error).message)
-        }
+        val state = viewModel.uiState.value
+        assertTrue(state is BooksUiState.Error)
+        assertEquals("error de conexion", (state as BooksUiState.Error).message)
     }
 }

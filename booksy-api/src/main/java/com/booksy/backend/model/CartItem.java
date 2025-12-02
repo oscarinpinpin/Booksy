@@ -1,17 +1,16 @@
 package com.booksy.backend.model;
 
-import jakarta.persistence.*;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
-@Entity
-@Table(name = "cart_items")
+@Document(collection = "cart_items")
 public class CartItem {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private String id;
 
-    private Long userId;
-    private Long bookId;
+    private String userId;
+    private String bookId;
     private Integer quantity;
     private Double pricePerUnit;
 
@@ -19,7 +18,7 @@ public class CartItem {
     public CartItem() {
     }
 
-    public CartItem(Long userId, Long bookId, Integer quantity, Double pricePerUnit) {
+    public CartItem(String userId, String bookId, Integer quantity, Double pricePerUnit) {
         this.userId = userId;
         this.bookId = bookId;
         this.quantity = quantity;
@@ -27,27 +26,27 @@ public class CartItem {
     }
 
     // getters y setters
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 
-    public Long getUserId() {
-        return id;
+    public String getUserId() {
+        return userId;
     }
 
-    public void setUserId(Long userId) {
+    public void setUserId(String userId) {
         this.userId = userId;
     }
 
-    public Long getBookId() {
+    public String getBookId() {
         return bookId;
     }
 
-    public void setBookId(Long bookId) {
+    public void setBookId(String bookId) {
         this.bookId = bookId;
     }
 

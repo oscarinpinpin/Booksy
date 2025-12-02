@@ -16,7 +16,9 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
-        buildConfigField("String", "API_BASE_URL", "\"http://10.0.2.2:8080/api/\"")
+        // Para emulador: http://10.0.2.2:8080/
+        // Para celular fisico: usa tu IP de WiFi
+        buildConfigField("String", "API_BASE_URL", "\"http://10.31.56.142:8080/\"")
     }
 
     compileOptions {

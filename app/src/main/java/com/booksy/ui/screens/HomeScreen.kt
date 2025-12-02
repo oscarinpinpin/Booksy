@@ -18,7 +18,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.booksy.data.models.Book
 import com.booksy.viewmodel.BooksUiState
 import com.booksy.viewmodel.BooksViewModel
-import com.booksy.viewmodel.GoogleBooksUiState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -30,9 +29,6 @@ fun HomeScreen(
     val uiState by viewModel.uiState.collectAsState()
     val searchQuery by viewModel.searchQuery.collectAsState()
     val selectedCategory by viewModel.selectedCategory.collectAsState()
-
-    val googleBooksState by viewModel.googleBooksState.collectAsState()
-    val googleQuery by viewModel.googleQuery.collectAsState()
 
     val categories = listOf("todas", "ficcion", "infantil", "poesia")
 
@@ -86,82 +82,7 @@ fun HomeScreen(
                 }
             }
 
-            Spacer(modifier = Modifier.height(8.dp))
-
-            // buscar en google books api externa
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                var googleSearchText by remember { mutableStateOf(googleQuery) }
-                OutlinedTextField(
-                    value = googleSearchText,
-                    onValueChange = { googleSearchText = it },
-                    modifier = Modifier.weight(1f),
-                    placeholder = { Text("buscar en google books") },
-                    singleLine = true
-                )
-                Spacer(modifier = Modifier.width(8.dp))
-                Button(onClick = { viewModel.searchGoogleBooks(googleSearchText) }) {
-                    Text("buscar")
-                }
-            }
-
-            // resultados de google books
-            when (val state = googleBooksState) {
-                is GoogleBooksUiState.Idle -> {}
-                is GoogleBooksUiState.Loading -> {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(16.dp),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        CircularProgressIndicator(modifier = Modifier.size(24.dp))
-                    }
-                }
-                is GoogleBooksUiState.Success -> {
-                    LazyRow(
-                        contentPadding = PaddingValues(16.dp),
-                        horizontalArrangement = Arrangement.spacedBy(12.dp)
-                    ) {
-                        items(state.books) { googleBook ->
-                            Card(
-                                modifier = Modifier.width(150.dp),
-                                elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
-                            ) {
-                                Column(
-                                    modifier = Modifier.padding(12.dp)
-                                ) {
-                                    Text(
-                                        text = googleBook.volumeInfo.title,
-                                        style = MaterialTheme.typography.bodyMedium,
-                                        fontWeight = FontWeight.Bold,
-                                        maxLines = 2
-                                    )
-                                    Spacer(modifier = Modifier.height(4.dp))
-                                    Text(
-                                        text = googleBook.volumeInfo.authors?.firstOrNull() ?: "desconocido",
-                                        style = MaterialTheme.typography.bodySmall,
-                                        color = Color.Gray
-                                    )
-                                }
-                            }
-                        }
-                    }
-                }
-                is GoogleBooksUiState.Error -> {
-                    Text(
-                        text = state.message,
-                        color = Color.Red,
-                        modifier = Modifier.padding(16.dp)
-                    )
-                }
-            }
-
-            Divider(modifier = Modifier.padding(vertical = 8.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
             // lista de libros
             when (val state = uiState) {
