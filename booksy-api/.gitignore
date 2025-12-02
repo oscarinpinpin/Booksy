@@ -1,7 +1,17 @@
+# maven
 target/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
+
+# node
+node_modules/
+dist/
+npm-debug.log*
+
+# environment
+.env
+.env.local
 
 ### IntelliJ IDEA ###
 .idea
